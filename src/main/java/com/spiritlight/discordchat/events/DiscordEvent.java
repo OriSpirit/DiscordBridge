@@ -2,19 +2,16 @@ package com.spiritlight.discordchat.events;
 
 import com.spiritlight.discordchat.ChatMessages;
 import com.spiritlight.discordchat.Main;
-import com.spiritlight.discordchat.Preferences;
 import com.spiritlight.discordchat.enums.ChatType;
 import com.spiritlight.discordchat.enums.Receiver;
 import com.spiritlight.discordchat.utils.EventManager;
 import com.spiritlight.discordchat.utils.SimpleChatObject;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class DiscordEvent extends ListenerAdapter implements ChatEvent.Listener {
 
@@ -23,7 +20,9 @@ public class DiscordEvent extends ListenerAdapter implements ChatEvent.Listener 
     public void onMessage(SimpleChatObject content) {
         // Send message to channel
         MinecraftServer minecraftServer = FMLCommonHandler.instance().getMinecraftServerInstance();
-        minecraftServer.sendMessage(new TextComponentString(content.getMessage()));
+        for(EntityPlayerMP player : minecraftServer.getPlayerList().getPlayers()) {
+            player.sendMessage(new TextComponentString(content.getMessage()));
+        }
     }
 
     // Discord message fired to Minecraft
