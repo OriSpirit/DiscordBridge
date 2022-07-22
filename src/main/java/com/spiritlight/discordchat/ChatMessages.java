@@ -1,5 +1,7 @@
 package com.spiritlight.discordchat;
 
+import net.minecraft.util.text.TextFormatting;
+
 /**
  * Useful class to store all general consistent chat messages.<br>
  * Placeholders for future notices:<br>
@@ -15,5 +17,5 @@ public class ChatMessages {
     public static final String PLAYER_LEFT = "%player% has left the server.";
     public static final String PLAYER_MESSAGE = "%player%: %message%";
     public static final String ADVANCEMENT_GET = "%player% has completed the advancement %advancement%!";
-    public static final String DISCORD_MESSAGE = "[Discord] %author%: %message%";
+    public static final String DISCORD_MESSAGE = "[" + TextFormatting.AQUA + "Discord" + TextFormatting.RESET + "] %author%: %message%";
 }

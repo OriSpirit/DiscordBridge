@@ -30,7 +30,9 @@ public class DiscordEvent extends ListenerAdapter implements ChatEvent.Listener 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if(!event.getChannel().getId().equals(Main.getConfig().getChannelId())) return;
         if(event.getAuthor().isBot()) return; // Ignore bot messages to prevent inf-loop
-        String sender = event.getAuthor().getName();
+        if(event.getMember() == null) return; // Prevent null-nicked etc
+        boolean hasNick = (event.getMember().getNickname() == null);
+        String sender = hasNick ? event.getMember().getNickname() : event.getAuthor().getName();
         String content = event.getMessage().getContentRaw();
         if(content.length() > 256) {
             event.getMessage().addReaction("\uD83D\uDCAC").queue();
