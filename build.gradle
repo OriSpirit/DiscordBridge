@@ -1,0 +1,127 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            name 'JitPack'
+            url 'https://jitpack.io'
+        }
+        maven { url = "https://maven.minecraftforge.net/" }
+        maven { url = "https://repo.spongepowered.org/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
+    }
+}
+        
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+version = '1.0'
+group = 'com.spiritlight.discordchat' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'DiscordChat'
+
+compileJava.sourceCompatibility = '1.8' // Need these here so eclipse task generates correctly.
+compileJava.targetCompatibility = '1.8'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+minecraft {
+    mappings channel: 'snapshot', version: '20171003-1.12'
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    runs {
+        client {
+            // workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+
+        server {
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+    }
+}
+
+repositories {
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
+    mavenCentral()
+}
+
+configurations {
+    include
+    implementation.extendsFrom(include)
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+
+    include 'org.yaml:snakeyaml:1.30'
+
+    // JDA Dependencies (why)
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    include 'org.slf4j:slf4j-simple:1.7.36'
+
+    // https://github.com/DV8FromTheWorld/JDA/releases
+    include ('net.dv8tion:JDA:4.4.0_352') {
+        exclude module: 'opus-java'
+    }
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
+    include 'org.apache.commons:commons-collections4:4.4'
+
+    include("com.neovisionaries:nv-websocket-client:2.14")
+
+    include('com.squareup.okhttp3:okhttp:4.10.0')
+}
+
+shadowJar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    configurations = [project.configurations.include]
+    relocate("net.dv8tion", "shadow.dv8tion")
+    relocate("org.apache.commons.collections4", "shadow.apache.commons.collections4")
+    relocate("org.slf4j", "shadow.slf4j")
+
+}
+
+jar {
+    enabled = false
+}
+
+reobf {
+    shadowJar {}
+}
+
+
+/*
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+
+}
+tasks.shadowJar.dependsOn tasks.relocateShadowJar*/
+
+jar.dependsOn("shadowJar")
+
+// Example configuration to allow publishing using the maven-publish task
+// This is the preferred method to reobfuscate your jar file
+// jar.finalizedBy('reobfJar')
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+//publish.dependsOn('reobfJar')
