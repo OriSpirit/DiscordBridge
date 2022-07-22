@@ -98,17 +98,15 @@ shadowJar {
     relocate("net.dv8tion", "shadow.dv8tion")
     relocate("org.apache.commons.collections4", "shadow.apache.commons.collections4")
     relocate("org.slf4j", "shadow.slf4j")
+}
 
+reobf {
+    shadowJar{}
 }
 
 jar {
     enabled = false
 }
-
-reobf {
-    shadowJar {}
-}
-
 
 /*
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
@@ -118,7 +116,7 @@ task relocateShadowJar(type: ConfigureShadowRelocation) {
 }
 tasks.shadowJar.dependsOn tasks.relocateShadowJar*/
 
-jar.dependsOn("shadowJar")
+// jar.dependsOn("shadowJar")
 
 // Example configuration to allow publishing using the maven-publish task
 // This is the preferred method to reobfuscate your jar file
