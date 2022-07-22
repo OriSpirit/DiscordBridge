@@ -92,6 +92,8 @@ dependencies {
     include('com.squareup.okhttp3:okhttp:4.10.0')
 }
 
+project.tasks.build.dependsOn project.tasks.shadowJar
+
 shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     configurations = [project.configurations.include]
@@ -101,7 +103,7 @@ shadowJar {
 }
 
 reobf {
-    shadowJar{}
+    shadowJar {}
 }
 
 jar {
