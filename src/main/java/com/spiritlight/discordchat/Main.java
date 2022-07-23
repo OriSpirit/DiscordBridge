@@ -39,7 +39,11 @@ public class Main
     public void onServerStop(final FMLServerStoppingEvent event) {
         SimpleChatObject object = new SimpleChatObject(ChatMessages.SERVER_STOPPED, ChatType.SERVER_MESSAGE);
         EventManager.getChatEvent().fire(object);
-        DiscordInstance.stop();
+        try {
+            DiscordInstance.stop();
+        } catch (NoClassDefFoundError ignored) {
+            // no-op: Caused by excluding an unnecessary library.
+        }
     }
 
     @EventHandler

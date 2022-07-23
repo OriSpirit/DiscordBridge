@@ -86,9 +86,7 @@ dependencies {
     include 'org.slf4j:slf4j-simple:1.7.36'
 
     // https://github.com/DV8FromTheWorld/JDA/releases
-    include ('net.dv8tion:JDA:4.4.0_352') {
-        exclude module: 'opus-java'
-    }
+    include ('net.dv8tion:JDA:4.4.0_352')
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
     include 'org.apache.commons:commons-collections4:4.4'
