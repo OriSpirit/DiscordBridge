@@ -5,6 +5,7 @@ import com.spiritlight.discordchat.Main;
 import com.spiritlight.discordchat.enums.ChatType;
 import com.spiritlight.discordchat.enums.Receiver;
 import com.spiritlight.discordchat.utils.EventManager;
+import com.spiritlight.discordchat.utils.ServerUtils;
 import com.spiritlight.discordchat.utils.SimpleChatObject;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -12,8 +13,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DiscordEvent extends ListenerAdapter implements ChatEvent.Listener {
+    private final Map<String, Runnable> commandMap = new CaseInsensitiveMap<String, Runnable>() {{
+        put("playerlist", getPlayerList);
+    }};
 
     // Handle message to send to Minecraft chat
     @Override
@@ -34,6 +43,10 @@ public class DiscordEvent extends ListenerAdapter implements ChatEvent.Listener 
         boolean hasNick = (event.getMember().getNickname() != null);
         String sender = hasNick ? event.getMember().getNickname() : event.getAuthor().getName();
         String content = event.getMessage().getContentRaw();
+        if(commandMap.containsKey(content)) {
+            commandMap.get(content).run();
+            return;
+        }
         if(content.length() > 256) {
             event.getMessage().addReaction("\uD83D\uDCAC").queue();
             content = content.substring(0, 253).concat("...");
@@ -42,4 +55,14 @@ public class DiscordEvent extends ListenerAdapter implements ChatEvent.Listener 
         SimpleChatObject object = new SimpleChatObject(message, ChatType.SERVER_MESSAGE, Receiver.MINECRAFT);
         EventManager.getChatEvent().fire(object);
     }
+
+    private final Runnable getPlayerList = () -> {
+        ServerUtils serverUtils = new ServerUtils();
+        int playerCount = serverUtils.getPlayers().size();
+        String[] players = serverUtils.getServer().getPlayerList().getOnlinePlayerNames();
+        String onlinePlayers = Arrays.toString(players);
+        String message = ChatMessages.PLAYER_LIST.replace("%count%", String.valueOf(playerCount)).replace("%players%", onlinePlayers);
+        SimpleChatObject object = new SimpleChatObject(message, ChatType.SERVER_MESSAGE, Receiver.DISCORD);
+        EventManager.getChatEvent().fire(object);
+    };
 }

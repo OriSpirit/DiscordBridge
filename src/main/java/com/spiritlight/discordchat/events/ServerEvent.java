@@ -17,19 +17,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 // When I got sane again I realized a lot of these aren't really needed
 public class ServerEvent implements ChatEvent.Listener {
-    @Mod.EventHandler
-    public void onServerStart(final FMLServerStartedEvent event) {
-        SimpleChatObject object = new SimpleChatObject(ChatMessages.SERVER_STARTED, ChatType.SERVER_MESSAGE);
-        EventManager.getChatEvent().fire(object);
-    }
-
-    @Mod.EventHandler
-    public void onServerStop(final FMLServerStoppingEvent event) {
-        SimpleChatObject object = new SimpleChatObject(ChatMessages.SERVER_STOPPED, ChatType.SERVER_MESSAGE);
-        EventManager.getChatEvent().fire(object);
-        DiscordInstance.stop();
-    }
-
     @SubscribeEvent
     public void onMessageReceived(ServerChatEvent event) {
         String message = ChatMessages.PLAYER_MESSAGE.replace("%player%", event.getUsername()).replace("%message%", event.getMessage());
