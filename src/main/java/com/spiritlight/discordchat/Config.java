@@ -1,5 +1,6 @@
 package com.spiritlight.discordchat;
 
+import org.apache.logging.log4j.LogManager;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -30,7 +31,10 @@ public class Config {
             Yaml yaml = new Yaml(new Constructor(Preferences.class));
             return yaml.load(inputStream);
         } catch (FileNotFoundException ex) {
-            if(antiLoop) return new Preferences();
+            if(antiLoop) {
+                LogManager.getLogger(Main.MODID).fatal("Unable to create a yaml file!");
+                return new Preferences();
+            }
             antiLoop = true;
             createNew();
             load();
