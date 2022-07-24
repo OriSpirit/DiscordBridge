@@ -13,7 +13,7 @@ Configs are generated in config/DiscordChat.yaml, fields:
 Check the console logs if the bot does not send messages, might have some useful information. (Does it have access? Is the channel ID correct? etc.)
 
 Config file:
-```
+```yaml
 # DiscordChat Config
 # Defines the bot token. Do not share to anyone else!
 botToken: "DISCORDBOT.TOKEN_ABCDEFG42069"
