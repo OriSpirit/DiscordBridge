@@ -9,7 +9,6 @@ public class Config {
     private static boolean antiLoop = false;
 
     public static void createNew() {
-        new File("DiscordChat").mkdirs();
         try {
             FileWriter newcfg = new FileWriter("config/DiscordChat.yaml");
             newcfg.write("# DiscordChat Config\n" +

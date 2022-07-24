@@ -50,13 +50,15 @@ public class ServerEvent implements ChatEvent.Listener {
     public void onAdvancement(AdvancementEvent event) {
         String message;
         try {
-            message = ChatMessages.ADVANCEMENT_GET.replace("%player%", event.getEntityPlayer().getName()).replace("%advancement%", event.getAdvancement().getDisplay().getTitle().getUnformattedText());
-        } catch (NullPointerException ex) {
-            ex.printStackTrace();
-            return;
+            String pName = event.getEntityPlayer().getName();
+            String adv = event.getAdvancement().getDisplayText().getUnformattedText();
+            if(adv.contains("/")) return; // prevent recipes
+            if(adv.contains(":recipes")) return; // you know what this does
+            message = ChatMessages.ADVANCEMENT_GET.replace("%player%", pName).replace("%advancement%", adv);
+            SimpleChatObject object = new SimpleChatObject(message, ChatType.ACHIEVEMENT);
+            EventManager.getChatEvent().fire(object);
+        } catch (NullPointerException ignored) {
         }
-        SimpleChatObject object = new SimpleChatObject(message, ChatType.ACHIEVEMENT);
-        EventManager.getChatEvent().fire(object);
     }
 
     @Override

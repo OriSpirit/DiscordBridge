@@ -16,9 +16,11 @@ public class ChatEvent {
     private final Multimap<Receiver, Listener> listeners = MultimapBuilder.hashKeys().arrayListValues().build();
 
     /**
-     * Subscribes to this event
+     * Subscribes to this event<br>
+     * One entity may subscribe to multiple types. However, devs should identify the {@code type} you are receiving if that's the case.
      * @param entity The {@link Listener} to subscribe to
-     * @return A boolean to indicate the operation result
+     * @param type The targeted {@link Receiver} of this entity
+     * @return {@code true} if operation succeeded, {@code false} if already subscribed
      */
     public boolean subscribe(Listener entity, Receiver type) {
         if(listeners.get(type).contains(entity)) return false;
@@ -29,7 +31,8 @@ public class ChatEvent {
     /**
      * Unsubscribes from this event
      * @param entity The {@link Listener} to unsubscribe from
-     * @return A boolean to indicate the operation result
+     * @param type The {@link Receiver} type to unsubscribe from
+     * @return {@code true} if operation succeeded, {@code false} if not subscribed
      */
     public boolean unsubscribe(Listener entity, Receiver type) {
         if(listeners.get(type).contains(entity)) {
